@@ -14,8 +14,17 @@ namespace Punto_de_ventaMVC.Controllers
 
         public IActionResult Index()
         {
-            var datos = _context.Producto.ToList();
-            return View(datos);
+            try
+            {
+                var datos = _context.Producto.ToList();
+                return View(datos);
+            }
+            catch (Exception ex)
+            {
+                // Guardar mensaje de error en ViewBag o ViewData
+                ViewBag.ErrorMessage = "Ocurrió un error: " + ex.Message;
+                return View("Error"); // Redirige a la vista Error.cshtml
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿@model Punto_de_ventaMVC.Models.Inventario
+﻿@model Punto_de_ventaMVC.Views.ViewsModels.AltaInventarioVM
+
 @{
     ViewData["Title"] = "Crear Inventario";
 }
@@ -11,25 +12,40 @@
 
     <div class="form-group">
         <label for="producto">Producto</label>
-        @*     <select asp-for="producto" class="form-control" id="producto" required>
+        <select asp-for="@Model.inventario.producto" class="form-select" id="producto" required>
             <option value="">Seleccione un producto</option>
-            @foreach (var producto in ViewBag.Productos as List<Punto_de_ventaMVC.Models.Producto>)
+            @foreach (var producto in Model.ProductosListItem)
             {
-                <option value="@producto.id_producto">@producto.nombre</option>
+                <option value="@producto.Value">@producto.Text</option>
             }
-        </select> *@
-        <input asp-for="producto" class="form-control" id="producto" type="number" required />
+        </select>
     </div>
 
     <div class="form-group">
         <label for="cantidad">Cantidad</label>
-        <input asp-for="cantidad" class="form-control" id="cantidad" type="number" required />
+        <input asp-for="@Model.inventario.cantidad" class="form-control" id="cantidad" type="number" required />
     </div>
 
     <div class="form-group">
         <label for="tipo">Tipo</label>
-        <input asp-for="tipo" class="form-control" id="tipo" type="text" />
+        <input asp-for="@Model.inventario.tipo" class="form-control" id="tipo" type="text" readonly />
     </div>
 
-    <button type="submit" class="btn btn-primary">Crear Inventario</button>
+    <button type="submit" class="btn btn-primary my-2">Crear Inventario</button>
 </form>
+
+<script>
+    document.getElementById("producto").addEventListener("change", function () {
+        const id = this.options[this.selectedIndex].value;
+
+        if (id) {
+            fetch(`/Inventario/GetTipoProducto?id=${id}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("tipo").value =  data.tipo;
+            });
+        } else {
+            document.getElementById("tipo").value = "";
+        }
+    });
+</script>
