@@ -9,7 +9,7 @@
 <table class="table table-striped table-bordered table-hover dataTableJS">
     <thead>
         <tr>
-            <th>ID</th>
+            <th hidden>ID</th>
             <th>Nombre</th>
             <th>Precio de Compra</th>
             <th>Precio de Venta</th>
@@ -23,7 +23,7 @@
         @foreach (var producto in Model)
         {
             <tr>
-                <td>@producto.id_producto</td>
+                <td hidden>@producto.id_producto</td>
                 <td>@producto.nombre</td>
                 <td>@producto.precio_compra</td>
                 <td>@producto.precio_venta</td>
