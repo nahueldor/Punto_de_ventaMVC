@@ -9,7 +9,7 @@
 <table class="table table-striped table-bordered table-hover dataTableJS">
     <thead>
         <tr>
-            <th>ID</th>
+            <th hidden>ID</th>
             <th>Nombre</th>
             <th>Apellido</th>
             <th>Teléfono</th>
@@ -21,7 +21,7 @@
         @foreach (var cliente in Model)
         {
             <tr>
-                <td>@cliente.id_cliente</td>
+                <td hidden>@cliente.id_cliente</td>
                 <td>@cliente.nombre</td>
                 <td>@cliente.apellido</td>
                 <td>@cliente.telefono</td>
