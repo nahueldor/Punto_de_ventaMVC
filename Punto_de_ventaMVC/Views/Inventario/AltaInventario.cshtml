@@ -1,0 +1,35 @@
+﻿@model Punto_de_ventaMVC.Models.Inventario
+@{
+    ViewData["Title"] = "Crear Inventario";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<!-- Formulario para crear un inventario -->
+<form asp-action="AltaInventario" method="post">
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        <label for="producto">Producto</label>
+        @*     <select asp-for="producto" class="form-control" id="producto" required>
+            <option value="">Seleccione un producto</option>
+            @foreach (var producto in ViewBag.Productos as List<Punto_de_ventaMVC.Models.Producto>)
+            {
+                <option value="@producto.id_producto">@producto.nombre</option>
+            }
+        </select> *@
+        <input asp-for="producto" class="form-control" id="producto" type="number" required />
+    </div>
+
+    <div class="form-group">
+        <label for="cantidad">Cantidad</label>
+        <input asp-for="cantidad" class="form-control" id="cantidad" type="number" required />
+    </div>
+
+    <div class="form-group">
+        <label for="tipo">Tipo</label>
+        <input asp-for="tipo" class="form-control" id="tipo" type="text" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Crear Inventario</button>
+</form>

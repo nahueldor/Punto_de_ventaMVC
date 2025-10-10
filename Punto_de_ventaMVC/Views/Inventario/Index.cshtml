@@ -1,0 +1,34 @@
+﻿@model IEnumerable<Punto_de_ventaMVC.Views.ViewsModels.InventarioVM>
+@{
+    ViewData["Title"] = "Inventarios";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<a href="@Url.Action("AltaInventario", "Inventario")" class="btn btn-primary"> Agregar Inventario</a>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th hidden>ID</th>
+            <th>Codigo</th>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Tipo</th>
+            <th>Fecha Inventario</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var inventario in Model)
+        {
+            <tr>
+                <td hidden>@inventario.id_inventario</td>
+                <td>@inventario.codigo</td>
+                <td>@inventario.producto</td>
+                <td>@inventario.cantidad</td>
+                <td>@inventario.tipo</td>
+                <td>@inventario.fecha_inventario?.ToString("yyyy-MM-dd HH:mm:ss")</td>
+            </tr>
+        }
+    </tbody>
+</table>

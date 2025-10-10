@@ -1,41 +1,73 @@
-# Prerequisites
-*.d
+# Archivos de compilación
+bin/
+obj/
+out/
+Backup
+Properties/
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
+# Archivos de usuario (configuraciones locales de Visual Studio, Rider, etc.)
+*.user
+*.userosscache
+*.suo
+*.sln.docstates
+*.vscode/
+*.vs/
+.idea/
 
-# Precompiled Headers
-*.gch
-*.pch
+# Configuración local del entorno
+*.Development.json
 
-# Linker files
-*.ilk
+# Archivos de dependencias
+# (Los paquetes se restauran automáticamente desde NuGet)
+packages/
+*.nupkg
+project.lock.json
+project.fragment.lock.json
 
-# Debugger Files
+# Archivos de logs y diagnósticos
+*.log
+*.tlog
+*.tmp
+*.bak
+*.dbmdl
+*.dbproj.schemaview
 *.pdb
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
+# Archivos de publicación / despliegue
+publish/
+*.Publish.xml
 
-# Fortran module files
-*.mod
-*.smod
+# Configuración del entorno local
+appsettings.json
+appsettings.Development.json
+appsettings.Local.json
 
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
+# Archivos de sistema (Windows / macOS / Linux)
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+*.swp
 
-# Executables
-*.exe
-*.out
-*.app
+# Certificados locales
+*.pfx
+*.snk
 
-# debug information files
-*.dwo
+# Archivos generados por cobertura o test
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+
+# Archivos de herramientas o caches
+_ReSharper*/
+*.DotSettings.user
+.vsconfig
+node_modules/
+bower_components/
+
+# Archivos temporales de build o IDEs
+*.cache
+*.lock.json
+.env
+.env.local
