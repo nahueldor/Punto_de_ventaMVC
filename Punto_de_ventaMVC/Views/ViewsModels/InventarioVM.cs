@@ -16,5 +16,9 @@ namespace Punto_de_ventaMVC.Views.ViewsModels
         public DateTime? fecha_inventario { get; set; }
 
         public string? tipo { get; set; }
+
+        public int? stock_minimo { get; set; }
+
+        public int? stock_maximo { get; set; }
     }
 }

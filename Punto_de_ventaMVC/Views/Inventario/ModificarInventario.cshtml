@@ -1,7 +1,7 @@
 ﻿@model Punto_de_ventaMVC.Views.ViewsModels.AltaModificacionInventarioVM
 
 @{
-    ViewData["Title"] = "Crear Inventario";
+    ViewData["Title"] = "Editar Inventario";
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -9,8 +9,10 @@
 <div style="width: 50%">
     <div class="row">
         <!-- Formulario para crear un inventario -->
-        <form asp-action="AltaInventario" method="post">
+        <form asp-action="ModificarInventario" method="post">
             @Html.AntiForgeryToken()
+
+            <input asp-for="@Model.inventario.id_inventario" id="id_inventario" type="number" hidden />
 
             <div class="form-group">
                 <label for="producto">Producto</label>
@@ -33,13 +35,14 @@
                 <input asp-for="@Model.inventario.tipo" class="form-control" id="tipo" type="text" readonly />
             </div>
 
-            <button type="submit" class="btn btn-primary my-2">Crear Inventario</button>
+            <button type="submit" class="btn btn-primary my-2">Editar Inventario</button>
             <a href="@Url.Action("Index", "Inventario")" class="btn btn-secondary my-3">Volver</a>
         </form>
     </div>
 </div>
 
 <script>
+    
     document.getElementById("producto").addEventListener("change", function () {
         const id = this.options[this.selectedIndex].value;
 
@@ -48,8 +51,6 @@
                 .then(response => response.json())
                 .then(data => {
                     document.getElementById("tipo").value =  data.tipo;
-                    document.getElementById("cantidad").min =  data.minimo;
-                    document.getElementById("cantidad").max =  data.maximo;
             });
         } else {
             document.getElementById("tipo").value = "";

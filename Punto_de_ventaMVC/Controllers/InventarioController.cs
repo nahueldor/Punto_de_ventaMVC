@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Punto_de_ventaMVC.Data;
 using Punto_de_ventaMVC.Models;
 using Punto_de_ventaMVC.Views.ViewsModels;
@@ -31,7 +32,9 @@ namespace Punto_de_ventaMVC.Controllers
                           producto = producto.nombre,
                           cantidad = inventario.cantidad,
                           fecha_inventario = inventario.fecha_inventario,
-                          tipo = inventario.tipo
+                          tipo = inventario.tipo,
+                          stock_minimo = producto.minimo,
+                          stock_maximo = producto.maximo
                       })
                 .Select(result => new InventarioVM
                 {
@@ -40,7 +43,9 @@ namespace Punto_de_ventaMVC.Controllers
                     producto = result.producto,
                     cantidad = result.cantidad,
                     fecha_inventario = result.fecha_inventario,
-                    tipo = result.tipo
+                    tipo = result.tipo,
+                    stock_minimo = result.stock_minimo,
+                    stock_maximo = result.stock_maximo
                 })
                 .ToList();
 
@@ -60,14 +65,9 @@ namespace Punto_de_ventaMVC.Controllers
         {
             try
             {
-                var model = new AltaInventarioVM
+                var model = new AltaModificacionInventarioVM
                 {
-                    ProductosListItem = _context.Producto
-                .Select(p => new SelectListItem
-                {
-                    Value = p.id_producto.ToString(),
-                    Text = p.nombre
-                }).ToList()
+                    ProductosListItem = GetProductoSelectList() ?? throw new ArgumentException("No se encontro la tabla producto.")
                 };
                 return View(model);
             }
@@ -104,6 +104,75 @@ namespace Punto_de_ventaMVC.Controllers
             }
         }
 
+        public IActionResult ModificarInventario(int id)
+        {
+            try
+            {
+                var model = new AltaModificacionInventarioVM
+                {
+                    ProductosListItem = GetProductoSelectList() ?? throw new ArgumentException("No se encontro la tabla producto."),
+                    inventario = _context.Inventario.FirstOrDefault(x => x.id_inventario == id) ?? throw new ArgumentException($"Inventario {id} no encontrado.")
+                };
+
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                // Guardar mensaje de error en ViewBag o ViewData
+                ViewBag.ErrorMessage = "Ocurrió un error: " + ex.Message;
+                return View("Error"); // Redirige a la vista Error.cshtml
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ModificarInventario(Inventario inventario)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    // Guardar la modificacion del inventario en la base de datos
+                    _context.Update(inventario);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction("Index");
+                }
+
+                return View(inventario);  // Si hay un error, regresa al formulario
+            }
+            catch (Exception ex)
+            {
+                // Guardar mensaje de error en ViewBag o ViewData
+                ViewBag.ErrorMessage = "Ocurrió un error: " + ex.Message;
+                return View("Error"); // Redirige a la vista Error.cshtml
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> BajarInventario(int id)
+        {
+            try
+            {
+                var inventario = await _context.Inventario.FirstOrDefaultAsync(x => x.id_inventario == id);
+
+                if (inventario == null)
+                {
+                    throw new ArgumentException($"Inventario {id} no encontrado.");
+                }
+
+                _context.Inventario.Remove(inventario);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = "Ocurrió un error: " + ex.Message;
+                return View("Error");
+            }
+        }
+
+
         [HttpGet]
         public IActionResult GetTipoProducto(int id)
         {
@@ -111,12 +180,12 @@ namespace Punto_de_ventaMVC.Controllers
             {
                 var producto = _context.Producto
                 .Where(p => p.id_producto == id)
-                .Select(p => new { p.id_producto, p.nombre, p.tipo })
+                .Select(p => new { p.tipo, p.minimo, p.maximo })
                 .FirstOrDefault();
 
                 if (producto == null)
                 {
-                    return NotFound();
+                    throw new ArgumentException($"No se encontro el producto {id}.");
                 }
 
                 return Json(producto);
@@ -127,6 +196,18 @@ namespace Punto_de_ventaMVC.Controllers
                 ViewBag.ErrorMessage = "Ocurrió un error: " + ex.Message;
                 return View("Error"); // Redirige a la vista Error.cshtml
             }
+        }
+
+        public List<SelectListItem> GetProductoSelectList()
+        {
+            var producto = _context.Producto
+            .Select(p => new SelectListItem
+            {
+                Value = p.id_producto.ToString(),
+                Text = p.nombre
+            }).ToList();
+
+            return producto;
         }
     }
 }
