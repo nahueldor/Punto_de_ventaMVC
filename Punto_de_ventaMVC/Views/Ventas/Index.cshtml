@@ -1,0 +1,45 @@
+﻿@model IEnumerable<Punto_de_ventaMVC.Models.Venta>
+
+@{
+    ViewData["Title"] = "Listado de Ventas";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<table class="table table-striped table-bordered table-hover dataTableJS">
+    <thead>
+        <tr>
+            <th hidden>ID</th>
+            <th>Numero</th>
+            <th>Cliente</th>
+            <th>Usuario</th>
+            <th>Fecha</th>
+            <th>Total</th>
+            <th>SubTotoal</th>
+            <th>ISV</th>
+            <th>descuento</th>
+            <th>accion</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var venta in Model)
+        {
+            <tr>
+                <td hidden>@venta.id_factura</td>
+                <td>@venta.numero</td>
+                <td>@venta.cliente</td>
+                <td>@venta.usuario</td>
+                <td>@venta.fecha_facturacion</td>
+                <td>@venta.total</td>
+                <td>@venta.subtotal</td>
+                <td>@venta.isv</td>
+                <td>@venta.descuento</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@venta.id_factura">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@venta.id_factura">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@venta.id_factura">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

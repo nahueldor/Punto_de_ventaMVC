@@ -14,6 +14,7 @@ namespace Punto_de_ventaMVC.Data
         public DbSet<Inventario> Inventario { get; set; }
         public DbSet<Producto> Producto { get; set; }
         public DbSet<Cliente> Cliente { get; set; }
+        public DbSet<Punto_de_ventaMVC.Models.Venta> Venta { get; set; } = default!;
         // Añade más DbSets para otras tablas
     }
 }
