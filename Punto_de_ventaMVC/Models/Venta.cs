@@ -16,6 +16,10 @@ namespace Punto_de_ventaMVC.Models
 
         public int? cliente { get; set; } = 0;
 
+
+        [ForeignKey("cliente")]
+        public Cliente Cliente { get; set; }  // Propiedad de navegació
+
         public int? usuario { get; set; } = 0;
 
         public DateTime? fecha_facturacion { get; set; } = DateTime.Now;

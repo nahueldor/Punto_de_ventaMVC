@@ -22,7 +22,10 @@ namespace Punto_de_ventaMVC.Controllers
         // GET: Ventas
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Venta.ToListAsync());
+            return View(await _context.Venta
+                .Include(v => v.Cliente)  // Esto hace el join con la tabla clientes
+                .ToListAsync());
+
         }
 
         // GET: Ventas/Details/5
@@ -34,6 +37,7 @@ namespace Punto_de_ventaMVC.Controllers
             }
 
             var venta = await _context.Venta
+                .Include(v => v.Cliente)
                 .FirstOrDefaultAsync(m => m.id_factura == id);
             if (venta == null)
             {
