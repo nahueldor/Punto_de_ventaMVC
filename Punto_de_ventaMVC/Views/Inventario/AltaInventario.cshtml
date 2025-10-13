@@ -21,11 +21,13 @@
                         <option value="@producto.Value">@producto.Text</option>
                     }
                 </select>
+                <span asp-validation-for="@Model.inventario.producto" class="text-danger"></span>
             </div>
 
             <div class="form-group">
                 <label for="cantidad">Cantidad</label>
                 <input asp-for="@Model.inventario.cantidad" class="form-control" id="cantidad" type="number" required />
+                <span asp-validation-for="@Model.inventario.cantidad" class="text-danger"></span>
             </div>
 
             <div class="form-group">
@@ -56,3 +58,7 @@
         }
     });
 </script>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

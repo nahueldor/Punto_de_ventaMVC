@@ -91,7 +91,7 @@ namespace Punto_de_ventaMVC.Controllers
                     // Guardar el inventario en la base de datos
                     _context.Add(inventario);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction("Index");
+                    return RedirectToAction(nameof(Index));
                 }
 
                 return View(inventario);  // Si hay un error, regresa al formulario
@@ -135,7 +135,7 @@ namespace Punto_de_ventaMVC.Controllers
                     // Guardar la modificacion del inventario en la base de datos
                     _context.Update(inventario);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction("Index");
+                    return RedirectToAction(nameof(Index));
                 }
 
                 return View(inventario);  // Si hay un error, regresa al formulario
@@ -163,7 +163,7 @@ namespace Punto_de_ventaMVC.Controllers
                 _context.Inventario.Remove(inventario);
                 await _context.SaveChangesAsync();
 
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
@@ -198,9 +198,10 @@ namespace Punto_de_ventaMVC.Controllers
             }
         }
 
-        public List<SelectListItem> GetProductoSelectList()
+        private List<SelectListItem> GetProductoSelectList()
         {
             var producto = _context.Producto
+            .OrderBy(x => x.nombre)
             .Select(p => new SelectListItem
             {
                 Value = p.id_producto.ToString(),
