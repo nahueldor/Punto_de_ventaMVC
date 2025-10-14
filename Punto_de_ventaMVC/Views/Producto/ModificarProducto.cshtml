@@ -1,7 +1,7 @@
 ﻿@model Punto_de_ventaMVC.Models.Producto
 
 @{
-    ViewData["Title"] = "Crear Producto";
+    ViewData["Title"] = "Editar Producto";
     var tiposList = ViewData["Tipos"] as List<SelectListItem> ?? new List<SelectListItem>();
 }
 
@@ -9,9 +9,10 @@
 
 
 <div class="row">
-    <form asp-action="AltaProducto" method="post">
+    <form asp-action="ModificarProducto" method="post">
         @Html.AntiForgeryToken()
-        <input asp-for="codigo" class="form-control" id="codigo" value="0" hidden />
+        <input asp-for="id_producto" class="form-control" id="id_producto" hidden />
+        <input asp-for="codigo" class="form-control" id="codigo" hidden />
 
         <div class="container m-0 p-0">
             <div class="row">
@@ -78,7 +79,7 @@
             </div>
         </div>
 
-        <button type="submit" class="btn btn-primary my-3">Crear Producto</button>
+        <button type="submit" class="btn btn-primary my-3">Editar Producto</button>
         <a href="@Url.Action("Index", "Producto")" class="btn btn-secondary my-3">Volver</a>
     </form>
 </div>
@@ -87,6 +88,15 @@
     const selectTipo = document.getElementById("selectTipo");
     const inputTipo = document.getElementById("inputTipo");
     const icono = btnToggle.querySelector("i");
+    const hiddenTipo = document.getElementById("hiddenTipo");
+
+    document.addEventListener("DOMContentLoaded", () => {
+
+
+        if (hiddenTipo && hiddenTipo.value) {
+            selectTipo.value = hiddenTipo.value;
+        }
+    });
 
     btnToggle.addEventListener("click", () => {
         // Si el select está visible → lo ocultamos y mostramos el input

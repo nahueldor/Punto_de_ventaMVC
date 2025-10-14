@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Punto_de_ventaMVC.Data;
 using Punto_de_ventaMVC.Models;
 
@@ -34,7 +35,7 @@ namespace Punto_de_ventaMVC.Controllers
         {
             try
             {
-                ViewData["Tipos"] = GetTipoSelectList();
+                ViewData["Tipos"] = GetTipoSelectList() ?? throw new ArgumentException("No se encontro la tabla producto.");
 
                 return View();
             }
@@ -52,15 +53,22 @@ namespace Punto_de_ventaMVC.Controllers
         {
             try
             {
-                _context.Add(producto);
-                await _context.SaveChangesAsync();
 
-                /// Revisar
-                producto.codigo = producto.id_producto.ToString();
-                await _context.SaveChangesAsync();
-                ///
+                if (ModelState.IsValid)
+                {
+                    _context.Add(producto);
+                    await _context.SaveChangesAsync();
 
-                return RedirectToAction(nameof(Index));
+                    /// Revisar - es redundante 'Codigo' con 'id_Producto'
+                    producto.codigo = producto.id_producto.ToString();
+                    await _context.SaveChangesAsync();
+                    ///
+
+                    return RedirectToAction(nameof(Index));
+                }
+
+                ViewData["Tipos"] = GetTipoSelectList() ?? throw new ArgumentException("No se encontro la tabla producto.");
+                return View(producto);
             }
             catch (Exception ex)
             {
@@ -69,6 +77,76 @@ namespace Punto_de_ventaMVC.Controllers
                 return View("Error"); // Redirige a la vista Error.cshtml
             }
         }
+
+        public IActionResult ModificarProducto(int id)
+        {
+            try
+            {
+
+                var producto = _context.Producto.FirstOrDefault(x => x.id_producto == id) ?? throw new ArgumentException($"Producto {id} no encontrado.");
+
+                ViewData["Tipos"] = GetTipoSelectList() ?? throw new ArgumentException("No se encontro la tabla producto.");
+
+                return View(producto);
+            }
+            catch (Exception ex)
+            {
+                // Guardar mensaje de error en ViewBag o ViewData
+                ViewBag.ErrorMessage = "Ocurrió un error: " + ex.Message;
+                return View("Error"); // Redirige a la vista Error.cshtml
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ModificarProducto(Producto producto)
+        {
+            try
+            {
+
+                if (ModelState.IsValid)
+                {
+                    _context.Update(producto);
+                    await _context.SaveChangesAsync();
+
+                    return RedirectToAction(nameof(Index));
+                }
+
+                ViewData["Tipos"] = GetTipoSelectList() ?? throw new ArgumentException("No se encontro la tabla producto.");
+                return View(producto);
+            }
+            catch (Exception ex)
+            {
+                // Guardar mensaje de error en ViewBag o ViewData
+                ViewBag.ErrorMessage = "Ocurrió un error: " + ex.Message;
+                return View("Error"); // Redirige a la vista Error.cshtml
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> BajarProducto(int id)
+        {
+            try
+            {
+                var producto = await _context.Producto.FirstOrDefaultAsync(x => x.id_producto == id);
+
+                if (producto == null)
+                {
+                    throw new ArgumentException($"Producto {id} no encontrado.");
+                }
+
+                _context.Producto.Remove(producto);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = "Ocurrió un error: " + ex.Message;
+                return View("Error");
+            }
+        }
+
         private List<SelectListItem> GetTipoSelectList()
         {
             return _context.Producto

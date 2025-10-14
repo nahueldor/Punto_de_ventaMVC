@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Punto_de_ventaMVC.Models
 {
     [Table("producto")]
-    public class Producto
+    public class Producto : IValidatableObject
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]  // Auto incremento
@@ -33,5 +33,32 @@ namespace Punto_de_ventaMVC.Models
         [Required(ErrorMessage = "El tipo del producto es obligatorio")]
         [MaxLength(50)]
         public string tipo { get; set; }
+
+
+        // Validación personalizada
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (minimo.HasValue && maximo.HasValue)
+            {
+                if (minimo > maximo)
+                {
+                    yield return new ValidationResult(
+                        "El stock máximo debe ser mayor o igual al stock mínimo.",
+                        new[] { nameof(maximo) } // campo afectado
+                    );
+                }
+            }
+
+            if (precio_compra.HasValue && precio_venta.HasValue)
+            {
+                if (precio_compra > precio_venta)
+                {
+                    yield return new ValidationResult(
+                        "El precio de venta debe ser mayor o igual que el precio de compra.",
+                        new[] { nameof(precio_venta) } // campo afectado
+                    );
+                }
+            }
+        }
     }
 }

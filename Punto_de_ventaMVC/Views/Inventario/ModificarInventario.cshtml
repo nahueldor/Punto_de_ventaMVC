@@ -17,7 +17,7 @@
             <div class="form-group">
                 <label for="producto">Producto</label>
                 <select asp-for="@Model.inventario.producto" class="form-select" id="producto" required>
-                    <option value="">Seleccione un producto</option>
+                    <option value="" hidden>Seleccione un producto</option>
                     @foreach (var producto in Model.ProductosListItem)
                     {
                         <option value="@producto.Value">@producto.Text</option>
