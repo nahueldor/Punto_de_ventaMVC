@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Punto_de_ventaMVC.Data;
 using Punto_de_ventaMVC.Models;
 using Punto_de_ventaMVC.Views.ViewsModels;
+using System.Text.Json;
 
 namespace Punto_de_ventaMVC.Controllers
 {

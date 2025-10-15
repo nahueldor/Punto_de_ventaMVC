@@ -12,7 +12,7 @@
         <form asp-action="AltaInventario" method="post">
             @Html.AntiForgeryToken()
 
-            <div class="form-group">
+            <div class="form-group my-2">
                 <label for="producto">Producto</label>
                 <select asp-for="@Model.inventario.producto" class="form-select" id="producto" required>
                     <option value="" hidden selected>Seleccione un producto</option>
@@ -24,13 +24,13 @@
                 <span asp-validation-for="@Model.inventario.producto" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
+            <div class="form-group my-2">
                 <label for="cantidad">Cantidad</label>
                 <input asp-for="@Model.inventario.cantidad" class="form-control" id="cantidad" type="number" required />
                 <span asp-validation-for="@Model.inventario.cantidad" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
+            <div class="form-group my-2">
                 <label for="tipo">Tipo</label>
                 <input asp-for="@Model.inventario.tipo" class="form-control" id="tipo" type="text" readonly />
             </div>

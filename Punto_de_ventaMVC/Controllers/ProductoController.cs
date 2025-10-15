@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Punto_de_ventaMVC.Data;
 using Punto_de_ventaMVC.Models;
+using System.Text.Json;
 
 namespace Punto_de_ventaMVC.Controllers
 {
@@ -160,6 +161,20 @@ namespace Punto_de_ventaMVC.Controllers
                Text = t
            })
            .ToList();
+        }
+
+        private static int getObtenerDolarVentaAsync()
+        {
+            return Task.Run(async () =>
+            {
+                using var client = new HttpClient();
+                var json = await client.GetStringAsync("https://dolarapi.com/v1/dolares/oficial");
+
+                using var doc = JsonDocument.Parse(json);
+                var venta = doc.RootElement.GetProperty("venta").GetDecimal();
+
+                return (int)Math.Round(venta);
+            }).Result; // Espera el resultado del Task sin necesidad de async externo
         }
     }
 }

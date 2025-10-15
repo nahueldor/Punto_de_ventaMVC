@@ -87,6 +87,39 @@
     const selectTipo = document.getElementById("selectTipo");
     const inputTipo = document.getElementById("inputTipo");
     const icono = btnToggle.querySelector("i");
+    const hiddenTipo = document.getElementById("hiddenTipo");
+
+        document.addEventListener("DOMContentLoaded", () => {
+        if (hiddenTipo && hiddenTipo.value) {
+            const valorGuardado = hiddenTipo.value;
+            const existeEnSelect = Array.from(selectTipo.options).some(opt => opt.value === valorGuardado);
+
+            if (existeEnSelect) {
+                // Si el valor está en el select → mostrar select
+                selectTipo.value = valorGuardado;
+                selectTipo.classList.remove("d-none");
+                inputTipo.classList.add("d-none");
+
+                icono.classList.remove("bi-list");
+                icono.classList.add("bi-plus-lg"); // ícono de agregar
+            } else {
+                // Si el valor no está → mostrar input
+                inputTipo.value = valorGuardado;
+                inputTipo.classList.remove("d-none");
+                selectTipo.classList.add("d-none");
+
+                icono.classList.remove("bi-plus-lg");
+                icono.classList.add("bi-list"); // ícono de lista
+            }
+        } else {
+            // Si no hay valor → mostrar select por defecto
+            selectTipo.classList.remove("d-none");
+            inputTipo.classList.add("d-none");
+
+            icono.classList.remove("bi-list");
+            icono.classList.add("bi-plus-lg");
+        }
+    });
 
     btnToggle.addEventListener("click", () => {
         // Si el select está visible → lo ocultamos y mostramos el input
