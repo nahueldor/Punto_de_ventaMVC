@@ -29,26 +29,80 @@ namespace Punto_de_ventaMVC.Controllers
         }
 
         // GET: Ventas/Create
+
         public IActionResult Create()
         {
-            return View();
+            var model = new FacturaViewModel
+            {
+                Venta = new Venta
+                {
+                    fecha_facturacion = DateTime.Now
+                },
+                Clientes = _context.Cliente
+                    .Select(c => new SelectListItem { Value = c.id_cliente.ToString(), Text = c.nombre })
+                    .ToList(),
+                Usuarios = _context.Usuario
+                    .Select(u => new SelectListItem { Value = u.id_usuario.ToString(), Text = u.nombre })
+                    .ToList(),
+                Productos = _context.Producto
+                    .Select(p => new SelectListItem { Value = p.id_producto.ToString(), Text = p.nombre })
+                    .ToList()
+            };
+
+            return View(model);
         }
+
 
         // POST: Ventas/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id_factura,numero,cliente,usuario,fecha_facturacion,total,subtotal,isv,descuento")] Venta venta)
+        //public async Task<IActionResult> Create([Bind("id_factura,numero,cliente,usuario,fecha_facturacion,total,subtotal,isv,descuento")] Venta venta)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        _context.Add(venta);
+        //        await _context.SaveChangesAsync();
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    return View(venta);
+        //}
+
+        public async Task<IActionResult> Create(FacturaViewModel model)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(venta);
+                // Guardar la venta
+                _context.Venta.Add(model.Venta);
+                await _context.SaveChangesAsync();
+
+                // Guardar los detalles
+                foreach (var detalle in model.Detalles)
+                {
+                    detalle.factura = model.Venta.id_factura;
+                    _context.FacturaDetalle.Add(detalle);
+                }
+
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(venta);
+
+            // Si hay errores, recargar listas
+            model.Clientes = _context.Cliente
+                .Select(c => new SelectListItem { Value = c.id_cliente.ToString(), Text = c.nombre })
+                .ToList();
+            model.Usuarios = _context.Usuario
+                .Select(u => new SelectListItem { Value = u.id_usuario.ToString(), Text = u.nombre })
+                .ToList();
+            model.Productos = _context.Producto
+                .Select(p => new SelectListItem { Value = p.id_producto.ToString(), Text = p.nombre })
+                .ToList();
+
+            return View(model);
         }
+
+
 
         // GET: Ventas/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -155,9 +209,6 @@ namespace Punto_de_ventaMVC.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-
-
-
         private bool VentaExists(int id)
         {
             return _context.Venta.Any(e => e.id_factura == id);
