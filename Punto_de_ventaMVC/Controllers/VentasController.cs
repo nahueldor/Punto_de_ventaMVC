@@ -28,25 +28,6 @@ namespace Punto_de_ventaMVC.Controllers
 
         }
 
-        // GET: Ventas/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var venta = await _context.Venta
-                .Include(v => v.Cliente)
-                .FirstOrDefaultAsync(m => m.id_factura == id);
-            if (venta == null)
-            {
-                return NotFound();
-            }
-
-            return View(venta);
-        }
-
         // GET: Ventas/Create
         public IActionResult Create()
         {
@@ -138,6 +119,28 @@ namespace Punto_de_ventaMVC.Controllers
             return View(venta);
         }
 
+        // GET: Ventas/Details/5
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var venta = await _context.Venta
+                .Include(v => v.Cliente)
+                .Include(v => v.Detalles) // Incluye los ítems de la factura
+                .ThenInclude(d => d.Producto) // Esto incluye el nombre del producto
+                .FirstOrDefaultAsync(m => m.id_factura == id);
+
+            if (venta == null)
+            {
+                return NotFound();
+            }
+
+            return View(venta);
+        }
+
         // POST: Ventas/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -152,6 +155,8 @@ namespace Punto_de_ventaMVC.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
+
 
         private bool VentaExists(int id)
         {

@@ -32,5 +32,7 @@ namespace Punto_de_ventaMVC.Models
 
         public decimal? descuento { get; set; } = 0;
 
+        public virtual ICollection<FacturaDetalle> Detalles { get; set; }
+
     }
 }

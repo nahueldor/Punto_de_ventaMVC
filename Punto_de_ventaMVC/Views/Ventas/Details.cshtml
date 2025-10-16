@@ -60,6 +60,28 @@
         </dd>
     </dl>
 </div>
+
+<h3>Items</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Precio Unitario</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Detalles)
+        {
+            <tr>
+                <td>@item.Producto.nombre</td>
+                <td>@item.cantidad</td>
+                <td>@item.precio.ToString("C")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.id_factura">Edit</a> |
     <a asp-action="Index">Back to List</a>
