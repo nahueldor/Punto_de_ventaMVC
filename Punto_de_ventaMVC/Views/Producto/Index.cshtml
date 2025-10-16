@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Punto_de_ventaMVC.Models.Producto>
+﻿@model IEnumerable<Punto_de_ventaMVC.Views.ViewsModels.ProductoVM>
 
 @{
     ViewData["Title"] = "Listado de Productos";
@@ -12,9 +12,11 @@
         <tr>
             <th hidden>ID</th>
             <th>Nombre</th>
-            <th>Precio de Compra</th>
-            <th>Precio de Venta</th>
-            <th>Código</th>
+            <th>Precio de Compra (Peso)</th>
+            <th>Precio de Compra (Dolar)</th>
+            <th>Precio de Venta (Peso)</th>
+            <th>Precio de Venta (Dolar)</th>
+            @* <th>Código</th> *@
             <th>Stock Mínimo</th>
             <th>Stock Máximo</th>
             <th>Tipo</th>
@@ -27,9 +29,11 @@
             <tr>
                 <td hidden>@producto.id_producto</td>
                 <td>@producto.nombre</td>
-                <td>@producto.precio_compra</td>
-                <td>@producto.precio_venta</td>
-                <td>@producto.codigo</td>
+                <td>@producto.precio_compra_peso$</td>
+                <td>@String.Format("{0:F2}", producto.precio_compra_dolar)$</td>
+                <td>@producto.precio_venta_peso$</td>
+                <td>@String.Format("{0:F2}", producto.precio_venta_dolar)$</td>
+                @* <td>@producto.codigo</td> *@
                 <td>@producto.minimo</td>
                 <td>@producto.maximo</td>
                 <td>@producto.tipo</td>

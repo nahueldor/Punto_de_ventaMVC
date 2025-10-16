@@ -20,9 +20,8 @@ namespace Punto_de_ventaMVC.Models
         [Required(ErrorMessage = "El precio de venta del producto es obligatorio")]
         public decimal? precio_venta { get; set; } = 0;
 
-        [Required(ErrorMessage = "El código del producto es obligatorio")]
         [MaxLength(20)]
-        public string codigo { get; set; }
+        public string codigo { get; set; } = "";
 
         [Required(ErrorMessage = "El stock minimo del producto es obligatorio")]
         public int? minimo { get; set; } = 0;

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Punto_de_ventaMVC.Data;
 using Punto_de_ventaMVC.Models;
+using Punto_de_ventaMVC.Views.ViewsModels;
 using System.Text.Json;
 
 namespace Punto_de_ventaMVC.Controllers
@@ -20,7 +21,22 @@ namespace Punto_de_ventaMVC.Controllers
         {
             try
             {
-                var datos = _context.Producto.ToList();
+                decimal cotizacion_dolar = getObtenerDolarVentaAsync();
+
+                var datos = _context.Producto.Select(result => new ProductoVM
+                {
+                    id_producto = result.id_producto,
+                    nombre = result.nombre,
+                    precio_compra_peso = result.precio_compra,
+                    precio_compra_dolar = Math.Round(result.precio_compra / cotizacion_dolar ?? 0, 2),
+                    precio_venta_peso = result.precio_venta,
+                    precio_venta_dolar = Math.Round(result.precio_venta / cotizacion_dolar ?? 0, 2),
+                    codigo = result.codigo,
+                    minimo = result.minimo,
+                    maximo = result.maximo,
+                    tipo = result.tipo
+                }).ToList();
+
                 return View(datos);
             }
             catch (Exception ex)
