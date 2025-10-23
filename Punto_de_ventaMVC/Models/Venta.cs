@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.DotNet.Scaffolding.Shared.Messaging;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Punto_de_ventaMVC.Models
@@ -11,15 +12,17 @@ namespace Punto_de_ventaMVC.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]  // Auto incremento
         public int id_factura { get; set; }
 
-        [Required]
-        public int? numero { get; set; } = 0;
+        [Required(ErrorMessage ="El campo numero, es obligatorio")]
+        public int? numero { get; set;}
 
+        [Required]
         public int? cliente { get; set; } = 0;
 
 
         [ForeignKey("cliente")]
         public Cliente Cliente { get; set; }  // Propiedad de navegació
 
+        [Required]
         public int? usuario { get; set; } = 0;
 
         public DateTime? fecha_facturacion { get; set; } = DateTime.Now;

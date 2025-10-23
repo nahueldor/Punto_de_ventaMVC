@@ -12,16 +12,18 @@ namespace Punto_de_ventaMVC.Models
         [ForeignKey("factura")]
         public Venta Venta { get; set; }
 
+        [Required]
         public int producto { get; set; }
 
         [ForeignKey("producto")]
         public Producto Producto { get; set; }
 
-
+        [Required]
         public int cantidad { get; set; }
+
+        [Required]
         public int factura { get; set; }
                
-
         public decimal precio { get; set; }
 
     }

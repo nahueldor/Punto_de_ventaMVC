@@ -1,12 +1,14 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
+using Punto_de_ventaMVC.Data;
+using Punto_de_ventaMVC.Models;
+using Punto_de_ventaMVC.Views.ViewsModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Punto_de_ventaMVC.Data;
-using Punto_de_ventaMVC.Models;
 
 namespace Punto_de_ventaMVC.Controllers
 {
@@ -34,7 +36,7 @@ namespace Punto_de_ventaMVC.Controllers
         {
             var model = new FacturaViewModel
             {
-                Venta = new Venta
+                Venta = new Venta()
                 {
                     fecha_facturacion = DateTime.Now
                 },
@@ -69,16 +71,51 @@ namespace Punto_de_ventaMVC.Controllers
         //    return View(venta);
         //}
 
-        public async Task<IActionResult> Create(FacturaViewModel model)
+        public async Task<IActionResult> Create(FacturaVM model)
         {
-            if (ModelState.IsValid)
+
+            Venta v = new Venta()
+            {
+                id_factura = model.Venta.id_factura,
+                numero = model.Venta.numero,
+                cliente = model.Venta.cliente,
+                Cliente = _context.Cliente.FirstOrDefault(x => x.id_cliente == model.Venta.cliente)
+                      ?? new Cliente(),
+                usuario = model.Venta.usuario,
+                fecha_facturacion = model.Venta.fecha_facturacion,
+                total = model.Venta.total,
+                subtotal = model.Venta.subtotal,
+                isv = model.Venta.isv,
+                descuento = model.Venta.descuento,
+                Detalles = null
+            };
+
+            List<FacturaDetalle> d = new List<FacturaDetalle>();
+
+            foreach (var fd in model.Detalles)
+            {
+                FacturaDetalle auxd = new FacturaDetalle()
+                {
+                    id_descripcion = fd.id_descripcion,
+                    Venta = (Venta)v,
+                    producto = fd.producto,
+                    Producto = _context.Producto.FirstOrDefault(x => x.id_producto == fd.producto)
+                           ?? new Producto(),
+                    cantidad = fd.cantidad,
+                    precio = fd.precio,
+                };
+            }
+
+            v.Detalles = d.ToArray();
+
+            if (ModelState.IsValid&& !model.Detalles.Any())
             {
                 // Guardar la venta
-                _context.Venta.Add(model.Venta);
+                _context.Venta.Add(v);
                 await _context.SaveChangesAsync();
 
                 // Guardar los detalles
-                foreach (var detalle in model.Detalles)
+                foreach (var detalle in d)
                 {
                     detalle.factura = model.Venta.id_factura;
                     _context.FacturaDetalle.Add(detalle);
@@ -88,18 +125,24 @@ namespace Punto_de_ventaMVC.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            FacturaViewModel modelViewModel = new FacturaViewModel()
+            {
+                Venta = v,
+                Detalles = d,
+            };
+
             // Si hay errores, recargar listas
-            model.Clientes = _context.Cliente
+            modelViewModel.Clientes = _context.Cliente
                 .Select(c => new SelectListItem { Value = c.id_cliente.ToString(), Text = c.nombre })
                 .ToList();
-            model.Usuarios = _context.Usuario
+            modelViewModel.Usuarios = _context.Usuario
                 .Select(u => new SelectListItem { Value = u.id_usuario.ToString(), Text = u.nombre })
                 .ToList();
-            model.Productos = _context.Producto
+            modelViewModel.Productos = _context.Producto
                 .Select(p => new SelectListItem { Value = p.id_producto.ToString(), Text = p.nombre })
                 .ToList();
 
-            return View(model);
+            return View(modelViewModel);
         }
 
 
