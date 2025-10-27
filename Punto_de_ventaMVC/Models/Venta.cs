@@ -15,14 +15,14 @@ namespace Punto_de_ventaMVC.Models
         [Required(ErrorMessage ="El campo numero, es obligatorio")]
         public int? numero { get; set;}
 
-        [Required]
+        [Required(ErrorMessage = "El campo cliente, es obligatorio")]
         public int? cliente { get; set; } = 0;
 
 
         //[ForeignKey("cliente")]
         //public Cliente Cliente { get; set; }  // Propiedad de navegació
 
-        [Required]
+        [Required(ErrorMessage = "El campo usuario, es obligatorio")]
         public int? usuario { get; set; } = 0;
 
         public DateTime? fecha_facturacion { get; set; } = DateTime.Now;
