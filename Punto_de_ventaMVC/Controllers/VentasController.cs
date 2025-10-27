@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static Punto_de_ventaMVC.Views.ViewsModels.DatailsVM;
 
 namespace Punto_de_ventaMVC.Controllers
 {
@@ -22,100 +23,71 @@ namespace Punto_de_ventaMVC.Controllers
         }
 
         // GET: Ventas
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await _context.Venta
-                .Include(v => v.Cliente)  // Esto hace el join con la tabla clientes
-                .ToListAsync());
 
+            var datos = _context.Venta
+             .Join(_context.Cliente,
+                   v => v.cliente,
+                   c => c.id_cliente,
+                   (v, c) => new
+                   {
+                       v.id_factura,
+                       v.numero,
+                       clienteNombre = $"{c.nombre} {c.apellido}",
+                       usuarioId = v.usuario,
+                       v.fecha_facturacion,
+                       v.total,
+                       v.subtotal,
+                       v.isv,
+                       v.descuento
+                   })
+             .Join(_context.Usuario,
+                   vc => vc.usuarioId,
+                   u => u.id_usuario,
+                   (vc, u) => new VentaVM
+                   {
+                       id_factura = vc.id_factura,
+                       numero = vc.numero,
+                       cliente = vc.clienteNombre,
+                       usuario = u.nombre,
+                       fecha = vc.fecha_facturacion,
+                       total = vc.total,
+                       subtotal = vc.subtotal,
+                       isv = vc.isv,
+                       descuento = vc.descuento
+                   })
+             .ToList();
+
+            return View(datos);
         }
 
-        // GET: Ventas/Create
-
-        public IActionResult Create()
+        [HttpGet]
+        public ActionResult AltaVenta()
         {
-            var model = new FacturaViewModel
-            {
-                Venta = new Venta()
-                {
-                    fecha_facturacion = DateTime.Now
-                },
-                Clientes = _context.Cliente
-                    .Select(c => new SelectListItem { Value = c.id_cliente.ToString(), Text = c.nombre })
-                    .ToList(),
-                Usuarios = _context.Usuario
-                    .Select(u => new SelectListItem { Value = u.id_usuario.ToString(), Text = u.nombre })
-                    .ToList(),
-                Productos = _context.Producto
+            ViewData["Clientes"] = GetClineteSelectList();
+            ViewData["Usuarios"] = GetUsuarioSelectList();
+            ViewData["Producto"] = _context.Producto
                     .Select(p => new SelectListItem { Value = p.id_producto.ToString(), Text = p.nombre })
-                    .ToList()
-            };
+                    .OrderBy(x => x.Text)
+                    .ToList();
 
-            return View(model);
+            return View();
         }
 
 
-        // POST: Ventas/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
         [ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("id_factura,numero,cliente,usuario,fecha_facturacion,total,subtotal,isv,descuento")] Venta venta)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _context.Add(venta);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(venta);
-        //}
-
-        public async Task<IActionResult> Create(FacturaVM model)
+        public async Task<IActionResult> AltaVenta(FacturaVM model)
         {
 
-            Venta v = new Venta()
-            {
-                id_factura = model.Venta.id_factura,
-                numero = model.Venta.numero,
-                cliente = model.Venta.cliente,
-                Cliente = _context.Cliente.FirstOrDefault(x => x.id_cliente == model.Venta.cliente)
-                      ?? new Cliente(),
-                usuario = model.Venta.usuario,
-                fecha_facturacion = model.Venta.fecha_facturacion,
-                total = model.Venta.total,
-                subtotal = model.Venta.subtotal,
-                isv = model.Venta.isv,
-                descuento = model.Venta.descuento,
-                Detalles = null
-            };
-
-            List<FacturaDetalle> d = new List<FacturaDetalle>();
-
-            foreach (var fd in model.Detalles)
-            {
-                FacturaDetalle auxd = new FacturaDetalle()
-                {
-                    id_descripcion = fd.id_descripcion,
-                    Venta = (Venta)v,
-                    producto = fd.producto,
-                    Producto = _context.Producto.FirstOrDefault(x => x.id_producto == fd.producto)
-                           ?? new Producto(),
-                    cantidad = fd.cantidad,
-                    precio = fd.precio,
-                };
-            }
-
-            v.Detalles = d.ToArray();
-
-            if (ModelState.IsValid&& !model.Detalles.Any())
+            if (ModelState.IsValid && model.Detalles.Any())
             {
                 // Guardar la venta
-                _context.Venta.Add(v);
+                _context.Venta.Add(model.Venta);
                 await _context.SaveChangesAsync();
 
                 // Guardar los detalles
-                foreach (var detalle in d)
+                foreach (var detalle in model.Detalles)
                 {
                     detalle.factura = model.Venta.id_factura;
                     _context.FacturaDetalle.Add(detalle);
@@ -125,26 +97,17 @@ namespace Punto_de_ventaMVC.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            FacturaViewModel modelViewModel = new FacturaViewModel()
-            {
-                Venta = v,
-                Detalles = d,
-            };
-
             // Si hay errores, recargar listas
-            modelViewModel.Clientes = _context.Cliente
-                .Select(c => new SelectListItem { Value = c.id_cliente.ToString(), Text = c.nombre })
-                .ToList();
-            modelViewModel.Usuarios = _context.Usuario
-                .Select(u => new SelectListItem { Value = u.id_usuario.ToString(), Text = u.nombre })
-                .ToList();
-            modelViewModel.Productos = _context.Producto
-                .Select(p => new SelectListItem { Value = p.id_producto.ToString(), Text = p.nombre })
-                .ToList();
+            ViewData["Clientes"] = GetClineteSelectList();
+            ViewData["Usuarios"] = GetUsuarioSelectList();
+            ViewData["Producto"] = _context.Producto
+                    .Select(p => new SelectListItem { Value = p.id_producto.ToString(), Text = p.nombre })
+                    .OrderBy(x => x.Text)
+                    .ToList();
 
-            return View(modelViewModel);
+
+            return View(model);
         }
-
 
 
         // GET: Ventas/Edit/5
@@ -174,7 +137,8 @@ namespace Punto_de_ventaMVC.Controllers
             {
                 return NotFound();
             }
-
+            //venta.Cliente = _context.Cliente.FirstOrDefault(x => x.id_cliente == venta.cliente)
+            //          ?? new Cliente();
             if (ModelState.IsValid)
             {
                 try
@@ -223,19 +187,58 @@ namespace Punto_de_ventaMVC.Controllers
             {
                 return NotFound();
             }
+            var datos = _context.Venta
+             .Join(_context.Cliente,
+                   v => v.cliente,
+                   c => c.id_cliente,
+                   (v, c) => new
+                   {
+                       v.id_factura,
+                       v.numero,
+                       clienteNombre = $"{c.nombre} {c.apellido}",
+                       usuarioId = v.usuario,
+                       v.fecha_facturacion,
+                       v.total,
+                       v.subtotal,
+                       v.isv,
+                       v.descuento
+                   })
+             .Join(_context.Usuario,
+                   vc => vc.usuarioId,
+                   u => u.id_usuario,
+                   (vc, u) => new DatailsVM
+                   {
+                       id_factura = vc.id_factura,
+                       numero = vc.numero,
+                       cliente = vc.clienteNombre,
+                       usuario = u.nombre,
+                       fecha = vc.fecha_facturacion,
+                       total = vc.total,
+                       subtotal = vc.subtotal,
+                       isv = vc.isv,
+                       descuento = vc.descuento
+                   })
+             .FirstOrDefault(x => x.id_factura == id);
 
-            var venta = await _context.Venta
-                .Include(v => v.Cliente)
-                .Include(v => v.Detalles) // Incluye los ítems de la factura
-                .ThenInclude(d => d.Producto) // Esto incluye el nombre del producto
-                .FirstOrDefaultAsync(m => m.id_factura == id);
+            var aux = _context.FacturaDetalle.Where(x => x.factura == id).ToList();
 
-            if (venta == null)
+            datos.productosDetalle = new List<ProductoDetalle>(
+                aux.Select(a => new ProductoDetalle()).ToList()
+            );
+
+            foreach (var (item, index) in aux.Select((item, index) => (item, index)))
+            {
+                datos.productosDetalle[index].detalle = item;
+                datos.productosDetalle[index].producto = _context.Producto
+                    .FirstOrDefault(x => x.id_producto == item.producto);
+            }
+
+            if (datos == null)
             {
                 return NotFound();
             }
 
-            return View(venta);
+            return View(datos);
         }
 
         // POST: Ventas/Delete/5
@@ -255,6 +258,56 @@ namespace Punto_de_ventaMVC.Controllers
         private bool VentaExists(int id)
         {
             return _context.Venta.Any(e => e.id_factura == id);
+        }
+
+        [HttpGet]
+        public IActionResult GetPrecioProducto(int id)
+        {
+            try
+            {
+                var producto = _context.Producto
+                .Where(p => p.id_producto == id)
+                .Select(p => new { p.precio_venta })
+                .FirstOrDefault();
+
+                if (producto == null)
+                {
+                    throw new ArgumentException($"No se encontro el producto {id}.");
+                }
+
+                return Json(producto);
+            }
+            catch (Exception ex)
+            {
+                // Guardar mensaje de error en ViewBag o ViewData
+                ViewBag.ErrorMessage = "Ocurrió un error: " + ex.Message;
+                return View("Error"); // Redirige a la vista Error.cshtml
+            }
+        }
+        private List<SelectListItem> GetClineteSelectList()
+        {
+            var cliente = _context.Cliente
+            .OrderBy(x => x.nombre)
+            .Select(p => new SelectListItem
+            {
+                Value = p.id_cliente.ToString(),
+                Text = $"{p.nombre} {p.apellido}"
+            }).ToList();
+
+            return cliente;
+        }
+
+        private List<SelectListItem> GetUsuarioSelectList()
+        {
+            var usuario = _context.Usuario
+            .OrderBy(x => x.nombre)
+            .Select(p => new SelectListItem
+            {
+                Value = p.id_usuario.ToString(),
+                Text = p.nombre
+            }).ToList();
+
+            return usuario;
         }
     }
 }

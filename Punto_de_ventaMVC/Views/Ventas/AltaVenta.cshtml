@@ -1,0 +1,219 @@
+﻿@model Punto_de_ventaMVC.Views.ViewsModels.FacturaVM
+
+@{
+    ViewData["Title"] = "Crear Venta";
+    var clientesList = ViewData["Clientes"] as List<SelectListItem> ?? new List<SelectListItem>();
+    var usuariosList = ViewData["Usuarios"] as List<SelectListItem> ?? new List<SelectListItem>();
+    var productos = ViewData["Producto"] as List<SelectListItem> ?? new List<SelectListItem>();
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="row">
+    <form asp-action="AltaVenta" method="post">
+        @Html.AntiForgeryToken()
+
+        <input asp-for="Venta.id_factura" hidden value="0" />
+
+        <div class="container m-0 p-0">
+            <div class="row">
+                <!-- Bloque Datos Factura -->
+                <div class="card text-bg-light mb-3 col-12">
+                    <div class="card-header">Datos Factura</div>
+                    <div class="card-body">
+                        <div class="row">
+                            <!-- Numero -->
+                            <div class="col-4">
+                                <div class="form-group my-2">
+                                    <label for="numero">Número de Factura</label>
+                                    <input asp-for="Venta.numero" class="form-control" id="numero" type="number" min="1" max="9999" required />
+                                    <span asp-validation-for="Venta.numero" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <!-- Cliente -->
+                            <div class="col-4">
+                                <div class="form-group my-2">
+                                    <label for="cliente">Cliente</label>
+                                    <div class="input-group">
+                                        <select asp-for="Venta.cliente" class="form-select" id="cliente" required>
+                                            <option value="" hidden selected>Seleccione un cliente</option>
+                                            @foreach (var c in clientesList)
+                                            {
+                                                <option value="@c.Value">@c.Text</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <span asp-validation-for="Venta.cliente" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <!-- Usuario -->
+                            <div class="col-4">
+                                <div class="form-group my-2">
+                                    <label for="usuario">Usuario</label>
+                                    <select asp-for="Venta.usuario" class="form-select" id="usuario" required>
+                                        <option value="" hidden selected>Seleccione un usuario</option>
+                                        @foreach (var u in usuariosList)
+                                        {
+                                            <option value="@u.Value">@u.Text</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="Venta.usuario" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bloque para agregar productos -->
+                <div class="card text-bg-light mb-3 col-12">
+                    <div class="card-header">Productos</div>
+                    <div class="card-body">
+                        <div class="col-4">
+                            <div class="row">
+                                <div class="col-7">
+                                    <select id="producto" class="form-select">
+                                        @foreach (var p in productos)
+                                        {
+                                            <option value="@p.Value">@p.Text</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="number" id="cantidad" class="form-control" placeholder="Cantidad" min="1" value="1" />
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" class="btn btn-success" onclick="agregarItem()">Agregar</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tabla de detalle -->
+                        <table class="table table-bordered" id="tablaItems">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Cantidad</th>
+                                    <th>Precio/Ud.</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+
+                    </div>
+                </div>
+
+                <!-- Bloque Totales -->
+                <div class="card text-bg-light mb-3 col-12">
+                    <div class="card-header">Total</div>
+                    <div class="card-body">
+                        <div class="col-4">
+                            <div class="form-group my-2">
+                                <label for="subtotal">Subtotal</label>
+                                <input asp-for="Venta.subtotal" class="form-control" id="subtotal" type="number" step="0.01" min="0" readonly />
+                                <span asp-validation-for="Venta.subtotal" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-4">
+                            <div class="form-group my-2">
+                                <label for="isv">ISV (15%)</label>
+                                <input asp-for="Venta.isv" class="form-control" id="isv" type="number" step="0.01" min="0" readonly />
+                                <span asp-validation-for="Venta.isv" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-4">
+                            <div class="form-group my-2">
+                                <label for="descuento">Descuento</label>
+                                <input asp-for="Venta.descuento" class="form-control" id="descuento" type="number" step="0.01" min="0" value="0" />
+                                <span asp-validation-for="Venta.descuento" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="form-group my-2">
+                                <label for="total">Total</label>
+                                <input asp-for="Venta.total" class="form-control" id="total" type="number" step="0.01" min="0" readonly />
+                                <span asp-validation-for="Venta.total" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary my-3">Registrar Venta</button>
+        <a href="@Url.Action("Index", "Ventas")" class="btn btn-secondary my-3">Volver</a>
+    </form>
+</div>
+
+<!-- Script: manejo de cliente dinámico y cálculo de total -->
+<script>
+    let detalles = [];
+
+    async function agregarItem() {
+        const productoId = document.getElementById("producto").value;
+        const productoNombre = document.getElementById("producto").selectedOptions[0].text;
+        const cantidad = parseInt(document.getElementById("cantidad").value);
+
+        if (!cantidad || cantidad <= 0) {
+            alert("Cantidad inválida");
+            return;
+        }
+
+        // Esperar a que llegue el precio
+        const response = await fetch(`/Ventas/GetPrecioProducto?id=${productoId}`);
+        const data = await response.json();
+        const precio = data.precio_venta;
+
+        detalles.push({ producto: productoId, cantidad: cantidad, nombre: productoNombre, precio:precio });
+        renderTabla();
+        calcularTotales();
+    }
+
+    function eliminarItem(index) {
+        detalles.splice(index, 1);
+        renderTabla();
+        calcularTotales();
+    }
+
+    function renderTabla() {
+        const tbody = document.querySelector("#tablaItems tbody");
+        tbody.innerHTML = "";
+
+        detalles.forEach((item, index) => {
+            const row = `<tr>
+                <td>${item.nombre}</td>
+                <td>${item.cantidad}</td>
+                <td>${item.precio}</td>
+                <td>
+                    <button type="button" class="btn btn-danger btn-sm" onclick="eliminarItem(${index})">Eliminar</button>
+                </td>
+                <input type="hidden" name="Detalles[${index}].producto" value="${item.producto}" />
+                <input type="hidden" name="Detalles[${index}].cantidad" value="${item.cantidad}" />
+                <input type="hidden" name="Detalles[${index}].precio" value="${item.precio}" />
+            </tr>`;
+            tbody.innerHTML += row;
+        });
+    }
+
+    function calcularTotales() {
+        let subtotal = detalles.reduce((sum, item) => sum + (item.cantidad * item.precio), 0); // Simula precio 100
+        let isv = subtotal * 0.15;
+        let descuento = parseFloat(document.getElementById("descuento").value) || 0;
+        let total = subtotal + isv - ((descuento*0.01)*subtotal);
+
+        document.getElementById("subtotal").value = subtotal.toFixed(2);
+        document.getElementById("isv").value = isv.toFixed(2);
+        document.getElementById("total").value = total.toFixed(2);
+    }
+
+    document.getElementById("descuento").addEventListener("input", calcularTotales);
+</script>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

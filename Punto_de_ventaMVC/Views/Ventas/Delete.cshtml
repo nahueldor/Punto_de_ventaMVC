@@ -63,7 +63,7 @@
     
     <form asp-action="Delete">
         <input type="hidden" asp-for="id_factura" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <button type="submit" class="btn btn-danger my-3">Eliminar</button>
+        <a href="@Url.Action("Index", "Ventas")" class="btn btn-secondary my-3">Volver</a>
     </form>
 </div>

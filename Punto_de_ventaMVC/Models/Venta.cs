@@ -19,8 +19,8 @@ namespace Punto_de_ventaMVC.Models
         public int? cliente { get; set; } = 0;
 
 
-        [ForeignKey("cliente")]
-        public Cliente Cliente { get; set; }  // Propiedad de navegació
+        //[ForeignKey("cliente")]
+        //public Cliente Cliente { get; set; }  // Propiedad de navegació
 
         [Required]
         public int? usuario { get; set; } = 0;
@@ -35,7 +35,7 @@ namespace Punto_de_ventaMVC.Models
 
         public decimal? descuento { get; set; } = 0;
 
-        public virtual ICollection<FacturaDetalle> Detalles { get; set; }
+        //public virtual ICollection<FacturaDetalle> Detalles { get; set; }
 
     }
 }

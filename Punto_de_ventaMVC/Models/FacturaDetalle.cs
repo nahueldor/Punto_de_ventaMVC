@@ -9,14 +9,14 @@ namespace Punto_de_ventaMVC.Models
         [Key]
         public int id_descripcion { get; set; }
 
-        [ForeignKey("factura")]
-        public Venta Venta { get; set; }
+        //[ForeignKey("factura")]
+        //public Venta Venta { get; set; }
 
         [Required]
         public int producto { get; set; }
 
-        [ForeignKey("producto")]
-        public Producto Producto { get; set; }
+        //[ForeignKey("producto")]
+        //public Producto Producto { get; set; }
 
         [Required]
         public int cantidad { get; set; }
