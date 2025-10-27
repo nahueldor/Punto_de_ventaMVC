@@ -30,7 +30,7 @@
                 <td>@cliente.identidad</td>
                 <td>@cliente.direccion</td>
                 <td class="d-flex justify-content-center align-items-center">
-                    <a href="@Url.Action("ModificarCliente", "Cliente", new { id = cliente.id_cliente })" class="btn btn-warning text-white m-1"><i class="bi bi-pencil-square"></i></a>
+                    <a href="@Url.Action("ModificarCliente", "Cliente", new { id = cliente.id_cliente })" class="btn btn-primary text-white m-1"><i class="bi bi-pencil-square"></i></a>
                     <a href="@Url.Action("BajarCliente", "Cliente", new { id = cliente.id_cliente })" class="btn btn-danger text-white m-1"><i class="bi bi-trash3"></i></a>
                 </td>
             </tr>

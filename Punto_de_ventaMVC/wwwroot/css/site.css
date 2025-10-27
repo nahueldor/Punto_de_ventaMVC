@@ -38,7 +38,7 @@ body {
 }
 
 .table {
-    font-family: 'Lora', serif;
+    font-family: 'Inter', sans-serif;
     font-size: 1rem;
     color: #1F2A37;
 }
@@ -80,3 +80,21 @@ body {
     padding-left: 20px
 }
 
+.display-4 {
+    background-color: #20A39E !important;
+    border-color: #20A39E !important;
+    color: #FFFFFF !important;
+    transition: background-color 0.3s;
+}
+
+
+
+h1, h2, h3 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+}
+
+.btn {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+}

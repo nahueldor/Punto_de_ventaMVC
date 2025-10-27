@@ -7,6 +7,7 @@
 
 <a href="@Url.Action("AltaInventario", "Inventario")" class="btn btn-primary my-3">Agregar Inventario</a>
 
+
 <table class="table table-striped table-bordered table-hover dataTableJS">
     <thead>
         <tr>
@@ -30,7 +31,7 @@
                 <td>@inventario.tipo</td>
                 <td>@inventario.fecha_inventario?.ToString("yyyy-MM-dd HH:mm:ss")</td>
                 <td class="d-flex justify-content-center align-items-center">
-                    <a href="@Url.Action("ModificarInventario", "Inventario", new { id = inventario.id_inventario })" class="btn btn-warning text-white m-1"><i class="bi bi-pencil-square"></i></a>
+                    <a href="@Url.Action("ModificarInventario", "Inventario", new { id = inventario.id_inventario })" class="btn btn-primary text-white m-1"><i class="bi bi-pencil-square"></i></a>
                     <a href="@Url.Action("BajarInventario", "Inventario", new { id = inventario.id_inventario })" class="btn btn-danger text-white m-1"><i class="bi bi-trash3"></i></a>
                 </td>
             </tr>
