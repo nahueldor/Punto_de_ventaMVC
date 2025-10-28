@@ -75,7 +75,7 @@ namespace Punto_de_ventaMVC.Controllers
             return View();
         }
 
-
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AltaVenta(FacturaVM model)
         {
@@ -117,6 +117,9 @@ namespace Punto_de_ventaMVC.Controllers
             {
                 return NotFound();
             }
+
+            ViewData["Clientes"] = GetClineteSelectList();
+            ViewData["Usuarios"] = GetUsuarioSelectList();
 
             var venta = await _context.Venta.FindAsync(id);
             if (venta == null)
@@ -196,6 +199,7 @@ namespace Punto_de_ventaMVC.Controllers
                        v.id_factura,
                        v.numero,
                        clienteNombre = $"{c.nombre} {c.apellido}",
+                       clienteId = c.id_cliente,
                        usuarioId = v.usuario,
                        v.fecha_facturacion,
                        v.total,
@@ -208,17 +212,22 @@ namespace Punto_de_ventaMVC.Controllers
                    u => u.id_usuario,
                    (vc, u) => new DatailsVM
                    {
-                       id_factura = vc.id_factura,
-                       numero = vc.numero,
-                       cliente = vc.clienteNombre,
-                       usuario = u.nombre,
-                       fecha = vc.fecha_facturacion,
-                       total = vc.total,
-                       subtotal = vc.subtotal,
-                       isv = vc.isv,
-                       descuento = vc.descuento
+                       venta = new Venta
+                       {
+                           id_factura = vc.id_factura,
+                           numero = vc.numero,
+                           cliente = vc.clienteId,
+                           usuario = u.id_usuario,
+                           fecha_facturacion = vc.fecha_facturacion,
+                           total = vc.total,
+                           subtotal = vc.subtotal,
+                           isv = vc.isv,
+                           descuento = vc.descuento
+                       },
+                       Cliente = vc.clienteNombre,
+                       Usuario = u.nombre,
                    })
-             .FirstOrDefault(x => x.id_factura == id);
+             .FirstOrDefault(x => x.venta.id_factura == id);
 
             var aux = _context.FacturaDetalle.Where(x => x.factura == id).ToList();
 

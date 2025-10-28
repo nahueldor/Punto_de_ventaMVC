@@ -2,11 +2,13 @@
 
 @{
     ViewData["Title"] = "Edit";
+
+    var clientesList = ViewData["Clientes"] as List<SelectListItem> ?? new List<SelectListItem>();
+    var usuariosList = ViewData["Usuarios"] as List<SelectListItem> ?? new List<SelectListItem>();
 }
 
-<h1>Edit</h1>
+<h1>Editar venta</h1>
 
-<h4>Venta</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -20,12 +22,28 @@
             </div>
             <div class="form-group">
                 <label asp-for="cliente" class="control-label"></label>
-                <input asp-for="cliente" class="form-control" />
+                @* <input asp-for="cliente" class="form-control" /> *@
+                <div class="input-group">
+                    <select asp-for="cliente" class="form-select" id="cliente" required>
+                        <option value="" hidden selected>Seleccione un cliente</option>
+                        @foreach (var c in clientesList)
+                        {
+                            <option value="@c.Value">@c.Text</option>
+                        }
+                    </select>
+                </div>
                 <span asp-validation-for="cliente" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="usuario" class="control-label"></label>
-                <input asp-for="usuario" class="form-control" />
+                @* <input asp-for="usuario" class="form-control" /> *@
+                <select asp-for="usuario" class="form-select" id="usuario" required>
+                    <option value="" hidden selected>Seleccione un usuario</option>
+                    @foreach (var u in usuariosList)
+                    {
+                        <option value="@u.Value">@u.Text</option>
+                    }
+                </select>
                 <span asp-validation-for="usuario" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -35,20 +53,20 @@
             </div>
             <div class="form-group">
                 <label asp-for="subtotal" class="control-label"></label>
-                <input asp-for="subtotal" class="form-control" readonly />
+                <input asp-for="subtotal" class="form-control" type="number" readonly />
             </div>
             <div class="form-group">
                 <label asp-for="isv" class="control-label"></label>
-                <input asp-for="isv" class="form-control" readonly />
+                <input asp-for="isv" class="form-control" type="number" readonly />
             </div>
             <div class="form-group">
                 <label asp-for="descuento" class="control-label"></label>
-                <input asp-for="descuento" class="form-control" />
+                <input asp-for="descuento" class="form-control" type="number" />
                 <span asp-validation-for="descuento" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="total" class="control-label"></label>
-                <input asp-for="total" class="form-control" readonly />
+                <input asp-for="total" class="form-control" type="number" readonly />
             </div>
             <div class="form-group">
                 <button type="submit" class="btn btn-primary my-3">Editar Venta</button>
