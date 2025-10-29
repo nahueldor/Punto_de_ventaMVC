@@ -53,10 +53,10 @@
             @Html.DisplayFor(model => model.isv)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.descuento)
+            @Html.DisplayNameFor(model => model.descuento) (%)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.descuento)
+            @String.Format("{0:0}", Model.descuento)%
         </dd>
     </dl>
     

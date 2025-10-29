@@ -1,76 +1,110 @@
-﻿@model Punto_de_ventaMVC.Models.Venta
+﻿@model Punto_de_ventaMVC.Views.ViewsModels.DatailsVM
 
 @{
     ViewData["Title"] = "Edit";
 
     var clientesList = ViewData["Clientes"] as List<SelectListItem> ?? new List<SelectListItem>();
     var usuariosList = ViewData["Usuarios"] as List<SelectListItem> ?? new List<SelectListItem>();
+    var productosDetalle = ViewData["Productos"] ?? new Producto();
 }
 
 <h1>Editar venta</h1>
 
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-12">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="id_factura" />
-            <div class="form-group">
-                <label asp-for="numero" class="control-label"></label>
-                <input asp-for="numero" class="form-control" />
-                <span asp-validation-for="numero" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="cliente" class="control-label"></label>
-                @* <input asp-for="cliente" class="form-control" /> *@
-                <div class="input-group">
-                    <select asp-for="cliente" class="form-select" id="cliente" required>
-                        <option value="" hidden selected>Seleccione un cliente</option>
-                        @foreach (var c in clientesList)
-                        {
-                            <option value="@c.Value">@c.Text</option>
-                        }
-                    </select>
+            <input type="hidden" asp-for="venta.id_factura" />
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group">
+                        <label asp-for="venta.numero" class="control-label"></label>
+                        <input asp-for="venta.numero" class="form-control" />
+                        <span asp-validation-for="venta.numero" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="venta.cliente" class="control-label"></label>
+                        @* <input asp-for="cliente" class="form-control" /> *@
+                        <div class="input-group">
+                            <select asp-for="venta.cliente" class="form-select" id="cliente" required>
+                                <option value="" hidden selected>Seleccione un cliente</option>
+                                @foreach (var c in clientesList)
+                                {
+                                    <option value="@c.Value">@c.Text</option>
+                                }
+                            </select>
+                        </div>
+                        <span asp-validation-for="venta.cliente" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="venta.usuario" class="control-label"></label>
+                        @* <input asp-for="usuario" class="form-control" /> *@
+                        <select asp-for="venta.usuario" class="form-select" id="usuario" required>
+                            <option value="" hidden selected>Seleccione un usuario</option>
+                            @foreach (var u in usuariosList)
+                            {
+                                <option value="@u.Value">@u.Text</option>
+                            }
+                        </select>
+                        <span asp-validation-for="venta.usuario" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="venta.fecha_facturacion" class="control-label"></label>
+                        <input asp-for="venta.fecha_facturacion" class="form-control" />
+                        <span asp-validation-for="venta.fecha_facturacion" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="venta.subtotal" class="control-label"></label>
+                        <input asp-for="venta.subtotal" class="form-control" type="number" readonly />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="venta.isv" class="control-label"></label>
+                        <input asp-for="venta.isv" class="form-control" type="number" readonly />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="venta.descuento" class="control-label">Descuento (%)</label>
+                        <input asp-for="venta.descuento" class="form-control" type="number" />
+                        <span asp-validation-for="venta.descuento" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="venta.total" class="control-label"></label>
+                        <input asp-for="venta.total" class="form-control" type="number" readonly />
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary my-3">Editar Venta</button>
+                        <a href="@Url.Action("Index", "Ventas")" class="btn btn-secondary my-3">Volver</a>
+                    </div>
                 </div>
-                <span asp-validation-for="cliente" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="usuario" class="control-label"></label>
-                @* <input asp-for="usuario" class="form-control" /> *@
-                <select asp-for="usuario" class="form-select" id="usuario" required>
-                    <option value="" hidden selected>Seleccione un usuario</option>
-                    @foreach (var u in usuariosList)
-                    {
-                        <option value="@u.Value">@u.Text</option>
-                    }
-                </select>
-                <span asp-validation-for="usuario" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="fecha_facturacion" class="control-label"></label>
-                <input asp-for="fecha_facturacion" class="form-control" />
-                <span asp-validation-for="fecha_facturacion" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="subtotal" class="control-label"></label>
-                <input asp-for="subtotal" class="form-control" type="number" readonly />
-            </div>
-            <div class="form-group">
-                <label asp-for="isv" class="control-label"></label>
-                <input asp-for="isv" class="form-control" type="number" readonly />
-            </div>
-            <div class="form-group">
-                <label asp-for="descuento" class="control-label"></label>
-                <input asp-for="descuento" class="form-control" type="number" />
-                <span asp-validation-for="descuento" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="total" class="control-label"></label>
-                <input asp-for="total" class="form-control" type="number" readonly />
-            </div>
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary my-3">Editar Venta</button>
-                <a href="@Url.Action("Index", "Ventas")" class="btn btn-secondary my-3">Volver</a>
+                <div class="col-6">
+                    <table class="table table-bordered mt-3" id="tablaItems">
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Precio/Ud.</th>
+                                <th>Cantidad</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (var i = 0; i < Model.productosDetalle.Count; i++)
+                            {
+                                <tr>
+                                    <td>@Model.productosDetalle[i].producto.nombre</td>
+                                    <td>@Model.productosDetalle[i].detalle.precio</td>
+                                    <td>
+                                        <input asp-for="productosDetalle[@i].detalle.cantidad" class="form-control" type="number" />
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-danger btn-sm" onclick="eliminarItem(@i)">Eliminar</button>
+                                    </td>
+                                    <input type="hidden" name="Model.productosDetalle[@i].producto.nombre" value="@Model.productosDetalle[i].producto.id_producto" />
+                                    <input type="hidden" name="Model.productosDetalle[@i].detalle.precio" value="@Model.productosDetalle[i].detalle.precio" />
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </form>
     </div>
