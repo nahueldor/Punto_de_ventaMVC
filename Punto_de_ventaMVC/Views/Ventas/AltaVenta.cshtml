@@ -13,7 +13,7 @@
     <form asp-action="AltaVenta" method="post">
         @Html.AntiForgeryToken()
 
-        <input asp-for="Venta.id_factura" hidden value="0" />
+        <input asp-for="venta.id_factura" hidden value="0" />
 
         <div class="container m-0 p-0">
             <div class="row">
@@ -26,8 +26,8 @@
                             <div class="col-4">
                                 <div class="form-group my-2">
                                     <label for="numero">Número de Factura</label>
-                                    <input asp-for="Venta.numero" class="form-control" id="numero" type="number" min="1" max="9999" required />
-                                    <span asp-validation-for="Venta.numero" class="text-danger"></span>
+                                    <input asp-for="venta.numero" class="form-control" id="numero" type="number" min="1" max="9999" required />
+                                    <span asp-validation-for="venta.numero" class="text-danger"></span>
                                 </div>
                             </div>
 
@@ -36,7 +36,7 @@
                                 <div class="form-group my-2">
                                     <label for="cliente">Cliente</label>
                                     <div class="input-group">
-                                        <select asp-for="Venta.cliente" class="form-select" id="cliente" required>
+                                        <select asp-for="venta.cliente" class="form-select" id="cliente" required>
                                             <option value="" hidden selected>Seleccione un cliente</option>
                                             @foreach (var c in clientesList)
                                             {
@@ -44,7 +44,7 @@
                                             }
                                         </select>
                                     </div>
-                                    <span asp-validation-for="Venta.cliente" class="text-danger"></span>
+                                    <span asp-validation-for="venta.cliente" class="text-danger"></span>
                                 </div>
                             </div>
 
@@ -52,14 +52,14 @@
                             <div class="col-4">
                                 <div class="form-group my-2">
                                     <label for="usuario">Usuario</label>
-                                    <select asp-for="Venta.usuario" class="form-select" id="usuario" required>
+                                    <select asp-for="venta.usuario" class="form-select" id="usuario" required>
                                         <option value="" hidden selected>Seleccione un usuario</option>
                                         @foreach (var u in usuariosList)
                                         {
                                             <option value="@u.Value">@u.Text</option>
                                         }
                                     </select>
-                                    <span asp-validation-for="Venta.usuario" class="text-danger"></span>
+                                    <span asp-validation-for="venta.usuario" class="text-danger"></span>
                                 </div>
                             </div>
                         </div>
@@ -112,32 +112,32 @@
                         <div class="col-4">
                             <div class="form-group my-2">
                                 <label for="subtotal">Subtotal</label>
-                                <input asp-for="Venta.subtotal" class="form-control" id="subtotal" type="number" step="0.01" min="0" readonly />
-                                <span asp-validation-for="Venta.subtotal" class="text-danger"></span>
+                                <input asp-for="venta.subtotal" class="form-control" id="subtotal" type="number" step="0.01" min="0" readonly />
+                                <span asp-validation-for="venta.subtotal" class="text-danger"></span>
                             </div>
                         </div>
 
                         <div class="col-4">
                             <div class="form-group my-2">
                                 <label for="isv">ISV (15%)</label>
-                                <input asp-for="Venta.isv" class="form-control" id="isv" type="number" step="0.01" min="0" readonly />
-                                <span asp-validation-for="Venta.isv" class="text-danger"></span>
+                                <input asp-for="venta.isv" class="form-control" id="isv" type="number" step="0.01" min="0" readonly />
+                                <span asp-validation-for="venta.isv" class="text-danger"></span>
                             </div>
                         </div>
 
                         <div class="col-4">
                             <div class="form-group my-2">
                                 <label for="descuento">Descuento (%)</label>
-                                <input asp-for="Venta.descuento" class="form-control" id="descuento" type="number" step="0.01" min="0" value="0" />
-                                <span asp-validation-for="Venta.descuento" class="text-danger"></span>
+                                <input asp-for="venta.descuento" class="form-control" id="descuento" type="number" step="0.01" min="0" value="0" />
+                                <span asp-validation-for="venta.descuento" class="text-danger"></span>
                             </div>
                         </div>
 
                         <div class="col-4">
                             <div class="form-group my-2">
                                 <label for="total">Total</label>
-                                <input asp-for="Venta.total" class="form-control" id="total" type="number" step="0.01" min="0" readonly />
-                                <span asp-validation-for="Venta.total" class="text-danger"></span>
+                                <input asp-for="venta.total" class="form-control" id="total" type="number" step="0.01" min="0" readonly />
+                                <span asp-validation-for="venta.total" class="text-danger"></span>
                             </div>
                         </div>
                     </div>
@@ -167,7 +167,7 @@
         // Esperar a que llegue el precio
         const response = await fetch(`/Ventas/GetPrecioProducto?id=${productoId}`);
         const data = await response.json();
-        const precio = data.precio_venta;
+        const precio = data.precio_venta*cantidad;
 
         detalles.push({ producto: productoId, cantidad: cantidad, nombre: productoNombre, precio:precio });
         renderTabla();

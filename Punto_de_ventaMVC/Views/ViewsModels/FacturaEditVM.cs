@@ -1,12 +1,11 @@
 ﻿using Punto_de_ventaMVC.Models;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Punto_de_ventaMVC.Views.ViewsModels
 {
-    public class FacturaVM
+    public class FacturaEditVM
     {
         public Venta venta { get; set; }
         public List<FacturaDetalle> Detalles { get; set; } = new List<FacturaDetalle>();
+        public List<Producto> Productos { get; set; } = new List<Producto>();
     }
 }

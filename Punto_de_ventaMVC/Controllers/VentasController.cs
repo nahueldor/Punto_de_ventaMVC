@@ -102,13 +102,13 @@ namespace Punto_de_ventaMVC.Controllers
                 if (ModelState.IsValid && model.Detalles.Any())
                 {
                     // Guardar la venta
-                    _context.Venta.Add(model.Venta);
+                    _context.Venta.Add(model.venta);
                     await _context.SaveChangesAsync();
 
                     // Guardar los detalles
                     foreach (var detalle in model.Detalles)
                     {
-                        detalle.factura = model.Venta.id_factura;
+                        detalle.factura = model.venta.id_factura;
                         _context.FacturaDetalle.Add(detalle);
                     }
 
@@ -149,6 +149,10 @@ namespace Punto_de_ventaMVC.Controllers
 
                 ViewData["Clientes"] = GetClineteSelectList();
                 ViewData["Usuarios"] = GetUsuarioSelectList();
+                ViewData["Producto"] = _context.Producto
+                       .Select(p => new SelectListItem { Value = p.id_producto.ToString(), Text = p.nombre })
+                       .OrderBy(x => x.Text)
+                       .ToList();
 
                 var venta = await _context.Venta.FindAsync(id);
                 if (venta == null)
@@ -156,22 +160,18 @@ namespace Punto_de_ventaMVC.Controllers
                     return NotFound();
                 }
 
-                var model = new DatailsVM()
+                var model = new FacturaEditVM()
                 {
                     venta = venta
                 };
 
                 var aux = _context.FacturaDetalle.Where(x => x.factura == id).ToList();
 
-                model.productosDetalle = new List<ProductoDetalle>(
-                    aux.Select(a => new ProductoDetalle()).ToList()
-                );
-
                 foreach (var (item, index) in aux.Select((item, index) => (item, index)))
                 {
-                    model.productosDetalle[index].detalle = item;
-                    model.productosDetalle[index].producto = _context.Producto
-                        .FirstOrDefault(x => x.id_producto == item.producto);
+                    model.Detalles.Add(item);
+                    model.Productos.Add(_context.Producto
+                        .FirstOrDefault(x => x.id_producto == item.producto) ?? new Producto());
                 }
 
                 return View(model);
@@ -187,8 +187,9 @@ namespace Punto_de_ventaMVC.Controllers
         // POST: Ventas/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("id_factura,numero,cliente,usuario,fecha_facturacion,total,subtotal,isv,descuento")] Venta venta, DatailsVM model)
+        public async Task<IActionResult> Edit(int id, FacturaEditVM model)
         {
+            var venta = model.venta;
             try
             {
                 if (id != venta.id_factura)
@@ -202,6 +203,20 @@ namespace Punto_de_ventaMVC.Controllers
                     try
                     {
                         _context.Update(venta);
+                        await _context.SaveChangesAsync();
+
+                        // Eliminar los detalles viejos
+                        var detallesViejos = _context.FacturaDetalle
+                            .Where(d => d.factura == model.venta.id_factura);
+                        _context.FacturaDetalle.RemoveRange(detallesViejos);
+
+                        // Agregar los nuevos
+                        foreach (var d in model.Detalles)
+                        {
+                            d.factura = model.venta.id_factura;
+                            _context.FacturaDetalle.Add(d);
+                        }
+
                         await _context.SaveChangesAsync();
                     }
                     catch (DbUpdateConcurrencyException)
