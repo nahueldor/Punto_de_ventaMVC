@@ -168,8 +168,9 @@
         const response = await fetch(`/Ventas/GetPrecioProducto?id=${productoId}`);
         const data = await response.json();
         const precio = data.precio_venta*cantidad;
+        const precioUd = data.precio_venta;
 
-        detalles.push({ producto: productoId, cantidad: cantidad, nombre: productoNombre, precio:precio });
+        detalles.push({ producto: productoId, cantidad: cantidad, nombre: productoNombre, precio:precio, precioUd:precioUd });
         renderTabla();
         calcularTotales();
     }
@@ -188,7 +189,7 @@
             const row = `<tr>
                 <td>${item.nombre}</td>
                 <td>${item.cantidad}</td>
-                <td>${item.precio}</td>
+                <td>${item.precioUd}</td>
                 <td>
                     <button type="button" class="btn btn-danger btn-sm" onclick="eliminarItem(${index})">Eliminar</button>
                 </td>
@@ -201,7 +202,7 @@
     }
 
     function calcularTotales() {
-        let subtotal = detalles.reduce((sum, item) => sum + (item.cantidad * item.precio), 0); // Simula precio 100
+        let subtotal = detalles.reduce((sum, item) => sum + (item.cantidad * item.precioUd), 0); // Simula precio 100
         let isv = subtotal * 0.15;
         let descuento = parseFloat(document.getElementById("descuento").value) || 0;
         let total = subtotal + isv - ((descuento*0.01)*subtotal);

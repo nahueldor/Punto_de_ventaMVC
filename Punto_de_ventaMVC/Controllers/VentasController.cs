@@ -187,8 +187,13 @@ namespace Punto_de_ventaMVC.Controllers
         // POST: Ventas/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, FacturaEditVM model)
+        public async Task<IActionResult> Edit(int id, [Bind(Prefix = "Model")] FacturaEditVM model)
         {
+            foreach (var key in Request.Form.Keys)
+            {
+                Console.WriteLine($"{key} = {Request.Form[key]}");
+            }
+
             var venta = model.venta;
             try
             {
