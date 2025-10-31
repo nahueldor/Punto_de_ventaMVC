@@ -177,19 +177,19 @@ namespace Punto_de_ventaMVC.Controllers.Api
                         return BadRequest(ModelState);
                     }
 
-                    var cliente = _context.Venta.FirstOrDefault(x => x.id_factura == id);
+                    var venta = _context.Venta.FirstOrDefault(x => x.id_factura == id);
 
-                    if (cliente != null)
+                    if (venta != null)
                     {
-                        cliente.id_factura = id;
-                        cliente.numero = model.numero;
-                        cliente.cliente = model.cliente;
-                        cliente.usuario = model.usuario;
-                        cliente.fecha_facturacion = model.fecha_facturacion;
-                        cliente.total = model.total;
-                        cliente.subtotal = model.subtotal;
-                        cliente.isv = model.isv;
-                        cliente.descuento = model.descuento;
+                        venta.id_factura = id;
+                        venta.numero = model.numero;
+                        venta.cliente = model.cliente;
+                        venta.usuario = model.usuario;
+                        venta.fecha_facturacion = model.fecha_facturacion;
+                        venta.total = model.total;
+                        venta.subtotal = model.subtotal;
+                        venta.isv = model.isv;
+                        venta.descuento = model.descuento;
 
                         _context.SaveChanges();
                     }
@@ -198,7 +198,7 @@ namespace Punto_de_ventaMVC.Controllers.Api
                         return NotFound($"Venta {id} no encontrada");
                     }
 
-                    return Ok(cliente);
+                    return Ok(venta);
                 }
 
                 return NotFound($"La venta no se pudo editar");

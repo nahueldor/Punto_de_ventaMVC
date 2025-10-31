@@ -1,0 +1,108 @@
+﻿/* CSS (site.css o <style> en la vista) */
+.banner {
+    position: relative;
+    width: 100vw;
+    height: 550px; /* ajustá según necesites */
+    overflow: hidden;
+    /* saca el fondo del container Bootstrap si está dentro de uno */
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+}
+
+/* fondo difuminado */
+.banner-blur {
+    position: absolute;
+    inset: 0; /* top:0; right:0; bottom:0; left:0; */
+    background-image: url('/img/PV.png');
+    background-size: cover;
+    background-position: center;
+    filter: blur(30px) brightness(0.8);
+    transform: scale(1.12);
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* imagen principal: ahora también absoluta para evitar stacking surprises */
+.banner-img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    height: 100%;
+    width: auto;
+    max-width: 80%; /* limitá para que no se estire demasiado */
+    object-fit: contain;
+    pointer-events: none;
+    border-radius:15px;
+}
+
+/* texto frontal: ABSOLUTO y z-index mayor */
+.banner-text {
+    position: absolute !important;
+    top: 92%; /* cambiá para ubicarlo donde quieras */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999 !important;
+    color: #fff;
+    font-weight: 700;
+    text-shadow: 0 3px 14px rgba(0,0,0,0.6);
+    margin: 0;
+    padding: 8px 20px;
+    background: rgba(0,0,0,0.08); /* opcional: mejora contraste */
+    border-radius: 3px; /* opcional */
+    white-space: nowrap;
+}
+.quote-card {
+    background: #20a39e;
+    border-radius: 1rem;
+    padding: 2rem;
+    max-width: 700px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.05);
+    color: #e6eef8;
+    margin-top: 10px;
+}
+
+.quote-mark {
+    font-size: 3rem;
+    font-weight: bold;
+    color: white;
+    line-height: 0.8;
+}
+
+.quote-text {
+    font-size: 1.25rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+}
+
+.quote-footer {
+    font-size: 0.9rem;
+    color: whitesmoke;
+}
+
+.badge-custom {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.02);
+    margin-right: 0.5rem;
+}
+
+/* responsive small screens */
+@media (max-width: 768px) {
+    .banner {
+        height: 280px;
+    }
+
+    .banner-img {
+        max-width: 95%;
+        border-radius: 15px;
+    }
+
+    .banner-text {
+        top: 88%;
+        font-size: 1.6rem;
+    }
+}

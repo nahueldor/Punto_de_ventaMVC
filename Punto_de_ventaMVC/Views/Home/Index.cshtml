@@ -3,9 +3,30 @@
 }
 
 <div class="text-center">
-     <link rel="stylesheet" href="~/css/styles.css" />
+    <link rel="stylesheet" href="~/css/styles.css" />
     <header>
-    <img src="img/PV.png" alt="Banner principal" class="banner">
-    </header>   
-    <h1 class="display-4">Cinco Mas Cinco</h1>
+        @*<img src="img/PV.png" alt="Banner principal" class="banner">*@
+        @*         <div class="contenedor-imagen">
+            <div class="fondo"></div>
+            <img src="img/PV.png" alt="Imagen principal" class="frente" />
+        </div> *@
+        <div class="banner">
+            <div class="banner-blur"></div>
+            <img src="~/img/PV.png" alt="Punto de venta" class="banner-img" />
+            <h1 class="display-4 banner-text">Cinco Mas Cinco</h1>
+        </div>
+    </header>
+    <div class="quote-card text-center">
+        <div class="d-flex justify-content-center align-items-start mb-3">
+            <div class="quote-mark">“</div>
+            <div class="ms-3 text-start">
+                <div class="quote-text">Antes, el orden era manual; hoy, la precisión es una sinfonía entre sensores y software.</div>
+                <div class="quote-footer">— Ray Bradbury.</div>
+            </div>
+        </div>
+        <div>
+            <span class="badge badge-custom">Inventario Inteligente</span>
+            <span class="badge badge-custom">IoT • Trazabilidad • Analítica</span>
+        </div>
+    </div>
 </div>

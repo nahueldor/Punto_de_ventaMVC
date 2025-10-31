@@ -189,20 +189,15 @@ namespace Punto_de_ventaMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind(Prefix = "Model")] FacturaEditVM model)
         {
-            foreach (var key in Request.Form.Keys)
-            {
-                Console.WriteLine($"{key} = {Request.Form[key]}");
-            }
-
             var venta = model.venta;
+
             try
             {
                 if (id != venta.id_factura)
                 {
                     return NotFound();
                 }
-                //venta.Cliente = _context.Cliente.FirstOrDefault(x => x.id_cliente == venta.cliente)
-                //          ?? new Cliente();
+
                 if (ModelState.IsValid)
                 {
                     try
@@ -258,14 +253,67 @@ namespace Punto_de_ventaMVC.Controllers
                     return NotFound();
                 }
 
-                var venta = await _context.Venta
-                    .FirstOrDefaultAsync(m => m.id_factura == id);
-                if (venta == null)
+                //var venta = await _context.Venta
+                //    .FirstOrDefaultAsync(m => m.id_factura == id);
+
+                var datos = _context.Venta
+                 .Join(_context.Cliente,
+                       v => v.cliente,
+                       c => c.id_cliente,
+                       (v, c) => new
+                       {
+                           v.id_factura,
+                           v.numero,
+                           clienteNombre = $"{c.nombre} {c.apellido}",
+                           clienteId = c.id_cliente,
+                           usuarioId = v.usuario,
+                           v.fecha_facturacion,
+                           v.total,
+                           v.subtotal,
+                           v.isv,
+                           v.descuento
+                       })
+                 .Join(_context.Usuario,
+                       vc => vc.usuarioId,
+                       u => u.id_usuario,
+                       (vc, u) => new DatailsVM
+                       {
+                           venta = new Venta
+                           {
+                               id_factura = vc.id_factura,
+                               numero = vc.numero,
+                               cliente = vc.clienteId,
+                               usuario = u.id_usuario,
+                               fecha_facturacion = vc.fecha_facturacion,
+                               total = vc.total,
+                               subtotal = vc.subtotal,
+                               isv = vc.isv,
+                               descuento = vc.descuento
+                           },
+                           Cliente = vc.clienteNombre,
+                           Usuario = u.nombre,
+                       })
+                 .FirstOrDefault(x => x.venta.id_factura == id);
+
+                var aux = _context.FacturaDetalle.Where(x => x.factura == id).ToList();
+
+                datos.productosDetalle = new List<ProductoDetalle>(
+                    aux.Select(a => new ProductoDetalle()).ToList()
+                );
+
+                foreach (var (item, index) in aux.Select((item, index) => (item, index)))
+                {
+                    datos.productosDetalle[index].detalle = item;
+                    datos.productosDetalle[index].producto = _context.Producto
+                        .FirstOrDefault(x => x.id_producto == item.producto);
+                }
+
+                if (datos == null)
                 {
                     return NotFound();
                 }
 
-                return View(venta);
+                return View(datos);
             }
             catch (Exception ex)
             {

@@ -1,4 +1,4 @@
-﻿@model Punto_de_ventaMVC.Models.Venta
+﻿@model Punto_de_ventaMVC.Views.ViewsModels.DatailsVM
 
 @{
     ViewData["Title"] = "Eliminar";
@@ -11,57 +11,57 @@
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.numero)
+            @Html.DisplayNameFor(model => model.venta.numero)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.numero)
+            @Html.DisplayFor(model => model.venta.numero)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.cliente)
+            @Html.DisplayNameFor(model => model.Cliente)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.cliente)
+            @Html.DisplayFor(model => model.Cliente)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.usuario)
+            @Html.DisplayNameFor(model => model.Usuario)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.usuario)
+            @Html.DisplayFor(model => model.Usuario)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.fecha_facturacion)
+            @Html.DisplayNameFor(model => model.venta.fecha_facturacion)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.fecha_facturacion)
+            @Html.DisplayFor(model => model.venta.fecha_facturacion)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.total)
+            @Html.DisplayNameFor(model => model.venta.subtotal)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.total)
+            @Html.DisplayFor(model => model.venta.subtotal)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.subtotal)
+            @Html.DisplayNameFor(model => model.venta.isv)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.subtotal)
+            @Html.DisplayFor(model => model.venta.isv)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.isv)
+            @Html.DisplayNameFor(model => model.venta.descuento) (%)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.isv)
+            @String.Format("{0:0}", Model.venta.descuento)%
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.descuento) (%)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.venta.total)
         </dt>
-        <dd class = "col-sm-10">
-            @String.Format("{0:0}", Model.descuento)%
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.venta.total)
         </dd>
     </dl>
     
     <form asp-action="Delete">
-        <input type="hidden" asp-for="id_factura" />
+        <input type="hidden" asp-for="venta.id_factura" />
         <button type="submit" class="btn btn-danger my-3">Eliminar</button>
         <a href="@Url.Action("Index", "Ventas")" class="btn btn-secondary my-3">Volver</a>
     </form>
