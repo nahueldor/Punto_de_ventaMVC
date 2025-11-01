@@ -232,7 +232,23 @@ namespace Punto_de_ventaMVC.Controllers
                     }
                     return RedirectToAction(nameof(Index));
                 }
-                return View(venta);
+
+                ViewData["Clientes"] = GetClineteSelectList();
+                ViewData["Usuarios"] = GetUsuarioSelectList();
+                ViewData["Producto"] = _context.Producto
+                       .Select(p => new SelectListItem { Value = p.id_producto.ToString(), Text = p.nombre })
+                       .OrderBy(x => x.Text)
+                       .ToList();
+
+                var aux = model.Detalles;
+
+                foreach (var (item, index) in aux.Select((item, index) => (item, index)))
+                {
+                    model.Productos.Add(_context.Producto
+                        .FirstOrDefault(x => x.id_producto == item.producto) ?? new Producto());
+                }
+
+                return View(model);
             }
             catch (Exception ex)
             {

@@ -75,9 +75,7 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="venta.total" class="control-label"></label>
-                        @*<input class="form-control" name="Model.venta.total" id="total" value="@Model.venta.total" type="number" step="0.01" min="0" readonly />*@
-                        <input class="form-control" id="total" value="@Model.venta.total" type="number" step="0.01" min="0" readonly />
-                        <input type="hidden" name="Model.venta.total" id="totalHidden" />
+                        <input class="form-control" name="Model.venta.total" id="total" value="@Model.venta.total" type="number" step="0.01" min="0" readonly />
                     </div>
                 </div>
                 <div class="col-6">
@@ -220,9 +218,6 @@
         document.getElementById("subtotal").value = subtotal.toFixed(2);
         document.getElementById("isv").value = isv.toFixed(2);
         document.getElementById("total").value = total.toFixed(2);
-
-        // Actualiza el hidden con punto decimal
-        document.getElementById("totalHidden").value = total.toFixed(2).replace(",", ".");
     }
 
     document.getElementById("descuento").addEventListener("input", calcularTotales);
